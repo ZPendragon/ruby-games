@@ -1,0 +1,201 @@
+Gosu Pazaak classes
+
+Gosu is all about drawing into the window
+  - I should create a Pazaak module that handles all the logic and returns values to determine drawing
+  - i.e. Value from shuffle => grab tileset at that value.
+
+
+Turn Counter 
+  - Starts with Player 1
+  - Then Dealer // Player 2
+  - etc...
+
+Win Count
+  - Draw lit up image over old image
+  - called when a winner is determined
+
+Card Position
+  - Pull Turn info from Turn Counter
+  - Determine position off that
+
+Draw_Deck_Card
+  - Determine (x,y) position from Card_Position
+  - Pull random 1-10, need to remove card from full deck array
+  - call Turn counter to update player(s) turn
+  
+Play_Side_Deck_card
+  - Determine (x,y) position from Card_Position
+  - Determine card from (1-4)
+  - call Turn counter to update player(s) turn
+
+Determine_Winner
+
+
+player_x_y --> Row 1 [[164,126],[243,128],[322,129]]
+player_x_y --> Row 2 [[162,217],[241,219],[320,220]]
+player_x_y --> Row 3 [[160,308],[239,310],[239,311]]
+
+player2_x_y --> Row 1 [[478,133],[559,134],[641,135]]
+player2_x_y --> Row 2 [[479,223],[558,223],[637,225]]
+player2_x_y --> Row 3 [[477,312],[557,314],[637,316]]
+
+
+player1_side_x_y --> [[89,425],[168,425],[249,427],[328,428]]
+player2_side_x_y --> [[465,430],[544,432],[624,433],[705,434]]
+
+player1_turn_icon_x_y [61,40,1]
+player2_turn_icon_x_y [702,50,1]
+
+
+Downloaded Old Republic Font
+
+@player_one_score_text.draw(353, 52, 1)
+@player_two_score_text.draw(435, 53, 1)
+
+What's Left?
+  
+  - Ending your turn 
+    + Front-End
+      - Press e on keyboard to end your turn?                                    ----DONE-----
+      - Shade the play side with a dark grey to show turn end?          
+    + Back-End
+      - Determine current player with Game#turn                                  ----DONE-----
+      - set player.end_turn = true                                               ----DONE-----
+      - set next_turn = +2                                                       ----DONE-----
+  
+  - Adding your name
+    + Front-End
+      - Draw intial Game window, have player press 'enter' to Start Game
+      - Clear Menu and switch game state to game window 
+    + Back-End
+      - Add name to player property
+      - 
+      
+  - Side Cards
+    + Draw into player side pool                                                 ----DONE-----
+    + allow player to select a card to play                                      ----DONE-----
+
+  - Determining Winner
+    + Front-End
+      - called when last remaining player presses 'e'
+      - draw win/lose set/match                                                 
+      - Reset game window and add set counter
+    + Back-End
+      - check_score when both players end_turn = true                            ----DONE-----
+      - update play win Counter                                                  ----DONE----- 
+      - check win counter(s) for match win                                       ----DONE-----
+
+
+Lando Calrissian
+Han Solo
+
+Subject: modifying image colors to denote player ended turn
+  - We only have access to the image 'color' at the time of drawing
+  - images do not have an attribute of color
+
+  - It seems the only way to change the color is to redraw the images
+    + To do this, we need to know:
+      - what images have been drawn?
+      - what 
+
+
+
+
+
+
+
+
+
+
+It's become clear that we wont actually run a 'game' in our module
+Rather, its going to be a series of commands that perform an action, some may be coinvolved. 
+More investigation needed.
+
+Drawing from the Deck
+  - We have to keep track of the Deck object 
+    - so we can remove cards from the current deck card pool
+  - Problem is requiring modules doesnt seem to allow for objects
+    - we are getting nil class because in Draw_card our deck object no longer exists
+      - we could move the deck to game rb file
+      - This would stop moduling all together
+      - perhaps we should do an 'include?'
+SOLVED
+  - in our game window init, we create have a property that is an instance of our Game object
+  - The game class will have all the values needed by way of properties such that we can modify to retain current state of game
+
+========================================================================================================================
+Game Flow
+
+1) Intialize
+2) Determine first turn
+3) deck_card
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+========================================================================================================================
+Leftover scrath from first iteration
+
+#card = Pazaak::TestClass.draw_card + 17
+    #working
+    #card = Pazaak::Game.draw_card + 17     
+    #@current_frame = rand(18..28) 
+
+
+  #     @player1_x_y = [[164,126],[243,128],[322,129],[162,217],[241,219],[320,220],[160,308],[239,310],[239,311]]
+  #     @player2_x_y = [[478,133],[559,134],[641,135],[479,223],[558,223],[637,225],[477,312],[557,314],[637,316]]
+
+  #     @player1_side_x_y = [[89,425],[168,425],[249,427],[328,428]]
+    # @player2_side_x_y = [[465,430],[544,432],[624,433],[705,434]]
+  #     @player1_pos = 0
+  #     @player2_pos = 0
+  #     @game_turn = 2
+  #     get_x_y
+
+
+
+  # def get_x_y
+  #   turn = @game_turn
+  #   if turn % 2 == 0
+  #     @pos_x = @player1_x_y[@player1_pos][0]
+  #     @pox_y = @player1_x_y[@player1_pos][1]
+  #     # @pos_x = @player1_side_x_y[@player1_pos][0]
+  #     # @pox_y = @player1_side_x_y[@player1_pos][1]
+  #     @game_turn += 1
+  #     @player1_pos += 1
+  #   elsif turn % 2 == 1
+  #     @pos_x = @player2_x_y[@player2_pos][0]
+  #     @pox_y = @player2_x_y[@player2_pos][1]
+  #     # @pos_x = @player2_side_x_y[@player2_pos][0]
+  #     # @pox_y = @player2_side_x_y[@player2_pos][1]
+  #     @game_turn += 1
+  #     @player2_pos += 1
+  #   end
+  # end
+
+  # @deck_cards.push(Deck_Card.new(@deck_animation, @deck_sound, @pos_x, @pox_y, @game))
+          # get_x_y
